@@ -33,6 +33,16 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Internal tracking files
+gx.md
+pz.md
+tk.md
+wf.md
+zn.md
+pt.md
+rf.json
+pmt.md
+
 # Symbolication related
 app.*.symbols
 
