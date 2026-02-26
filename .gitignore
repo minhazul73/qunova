@@ -42,6 +42,7 @@ zn.md
 pt.md
 rf.json
 pmt.md
+.images/
 
 # Symbolication related
 app.*.symbols
