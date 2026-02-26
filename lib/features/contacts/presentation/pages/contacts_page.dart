@@ -1,0 +1,16 @@
+import 'package:flutter/material.dart';
+
+class ContactsPage extends StatelessWidget {
+  const ContactsPage({super.key});
+
+  static const String name = 'contacts';
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text('Contacts (placeholder)'),
+      ),
+    );
+  }
+}
