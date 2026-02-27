@@ -102,11 +102,6 @@ void _setupUseCaseDependencies() {
     GetContactsUseCase(repository: sl<ContactRepository>()),
   );
 
-  // Get Contacts Use Case (singleton)
-  sl.registerSingleton<GetContactsUseCase>(
-    GetContactsUseCase(repository: sl<ContactRepository>()),
-  );
-
   // Get Recent Contacts Use Case (singleton)
   sl.registerSingleton<GetRecentContactsUseCase>(
     GetRecentContactsUseCase(repository: sl<ContactRepository>()),
