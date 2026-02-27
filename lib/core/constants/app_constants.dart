@@ -9,6 +9,10 @@ class AppConstants {
   static const String appBrand = 'assets/images/png/app_brand.png';
   static const String appLogo = 'assets/images/png/app_logo.png';
 
+  /// Loading indicator size
+  static const double loaderSize = 60.0;
+  static const double loaderBorderRadius = 15.0;
+
   /// SharedPreferences keys
   static const String hasSeenOnboardingKey = 'has_seen_onboarding';
   static const String recentContactIdsKey = 'recent_contact_ids';

@@ -1,14 +1,14 @@
 part of 'splash_bloc.dart';
 
 enum CirclePosition {
-  hidden,      // Off-screen (initial and when hiding for first launch)
-  corners,     // Visible in corners
-  center,      // Moving/moved to center for final animation
+  hidden,
+  corners,
+  center,
 }
 
 enum CircleColor {
-  primary,     // AppColors.primary
-  white,       // White color for final animation
+  primary,
+  white,
 }
 
 sealed class SplashState {

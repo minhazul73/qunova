@@ -26,11 +26,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     SplashStarted event,
     Emitter<SplashState> emit,
   ) async {
-    // Start with initial state (logo only)
     emit(const SplashInitial());
-
-    // Wait 200ms then animate circles in
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(AppConstants.mediumAnimationDuration);
     add(const SplashCirclesAnimateIn());
   }
 
@@ -38,13 +35,9 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     SplashCirclesAnimateIn event,
     Emitter<SplashState> emit,
   ) async {
-    // Animate circles into corners
     emit(const SplashCirclesVisible());
-
-    // Wait for animation to complete, then check first launch
-    await Future.delayed(AppConstants.mediumAnimationDuration * 3);
-
-    // Check if first launch
+    await Future.delayed(AppConstants.largeAnimationDuration);
+    
     final hasSeenOnboarding = await _prefsStore.getBool(AppConstants.hasSeenOnboardingKey) ?? false;
     add(SplashFirstLaunchChecked(isFirstLaunch: !hasSeenOnboarding));
   }
@@ -54,18 +47,12 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     Emitter<SplashState> emit,
   ) async {
     if (event.isFirstLaunch) {
-      // First launch: hide circles
       emit(const SplashShowingOnboarding());
-      // Wait for hide animation to complete
-      await Future.delayed(AppConstants.mediumAnimationDuration).then((_) {
-        // Circles are fully hidden, now ready to show sheet
-        add(const SplashCirclesFullyHidden());
-      });
+      await Future.delayed(AppConstants.mediumAnimationDuration);
+      add(const SplashCirclesFullyHidden());
     } else {
-      // Returning user: proceed directly to final animation
-      await Future.delayed(AppConstants.mediumAnimationDuration).then((_) {
-        add(const SplashStartFinalAnimation());
-      });
+      await Future.delayed(AppConstants.mediumAnimationDuration);
+      add(const SplashStartFinalAnimation());
     }
   }
 
@@ -73,7 +60,6 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     SplashCirclesFullyHidden event,
     Emitter<SplashState> emit,
   ) async {
-    // Circles are fully hidden, show the onboarding sheet
     emit(const SplashOnboardingActive());
   }
 
@@ -81,26 +67,17 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     SplashOnboardingCompleted event,
     Emitter<SplashState> emit,
   ) async {
-    // Save that onboarding has been seen
     await _prefsStore.setBool(AppConstants.hasSeenOnboardingKey, true);
-
-    // Start final animation
-    await Future.delayed(AppConstants.mediumAnimationDuration).then((_) {
-      add(const SplashStartFinalAnimation());
-    });
+    await Future.delayed(AppConstants.mediumAnimationDuration);
+    add(const SplashStartFinalAnimation());
   }
 
   Future<void> _onStartFinalAnimation(
     SplashStartFinalAnimation event,
     Emitter<SplashState> emit,
   ) async {
-    // Trigger final animation: circles to center, color to white, expand/shrink
     emit(const SplashFinalAnimation());
-
-    // Wait for final animation to complete
-    await Future.delayed(AppConstants.mediumAnimationDuration * 3);
-
-    // Animation is fully complete
+    await Future.delayed(AppConstants.largeAnimationDuration);
     add(const SplashFinalAnimationComplete());
   }
 
@@ -108,13 +85,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     SplashFinalAnimationComplete event,
     Emitter<SplashState> emit,
   ) async {
-    // Animation complete, ready to navigate
     emit(const SplashReadyToNavigate());
-
-    // Delay slightly before navigating to allow animations to settle
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    // Navigate to main app
+    await Future.delayed(AppConstants.shortAnimationDuration);
     add(const SplashNavigateToMain());
   }
 
