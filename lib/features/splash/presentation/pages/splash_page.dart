@@ -8,6 +8,9 @@ import '../../../../core/persistence/shared_prefs_store.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../contacts/presentation/pages/contacts_page.dart';
 import '../bloc/splash_bloc.dart';
+import '../constants/splash_constants.dart';
+import '../models/circle_position_data.dart';
+import '../widgets/animated_circle.dart';
 import '../widgets/first_launch_sheet.dart';
 
 class SplashPage extends StatelessWidget {
@@ -55,7 +58,7 @@ class _SplashPageContentState extends State<_SplashPageContent>
     super.initState();
     _sheetController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 450),
+      duration: AppConstants.mediumAnimationDuration,
     );
     // Hide status bar and navigation bar
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
@@ -90,6 +93,97 @@ class _SplashPageContentState extends State<_SplashPageContent>
     );
   }
 
+  ({
+    CirclePositionData topCircle,
+    CirclePositionData bottomCircle,
+    Color color,
+    Duration duration,
+  }) _calculateCirclePositions(
+    SplashState state,
+    double width,
+    double height,
+  ) {
+    final bottomCircleRadius = width * SplashConstants.bottomCircleRadiusRatio;
+    final topCircleRadius = width * SplashConstants.topCircleRadiusRatio;
+    final loaderRadius = width * SplashConstants.loaderRadiusRatio;
+
+    late CirclePositionData topCircle;
+    late CirclePositionData bottomCircle;
+    late Color circleColor;
+    late Duration circleDuration;
+
+    switch (state.circlePosition) {
+      case CirclePosition.hidden:
+        topCircle = CirclePositionData.top(
+          topPosition: -topCircleRadius * 2,
+          rightPosition: -topCircleRadius * 2,
+          size: topCircleRadius * 2,
+        );
+        bottomCircle = CirclePositionData.bottom(
+          bottomPosition: -bottomCircleRadius * 2,
+          leftPosition: -bottomCircleRadius * 2,
+          size: bottomCircleRadius * 2,
+        );
+        break;
+
+      case CirclePosition.corners:
+        topCircle = CirclePositionData.top(
+          topPosition: -topCircleRadius,
+          rightPosition: -topCircleRadius,
+          size: topCircleRadius * 2,
+        );
+        bottomCircle = CirclePositionData.bottom(
+          bottomPosition: -bottomCircleRadius,
+          leftPosition: -bottomCircleRadius,
+          size: bottomCircleRadius * 2,
+        );
+        break;
+
+      case CirclePosition.center:
+        if (state.isAnimatingFinal) {
+          bottomCircle = CirclePositionData.bottom(
+            bottomPosition: height / 2 - loaderRadius,
+            leftPosition: width / 2 - loaderRadius,
+            size: loaderRadius * 2,
+          );
+          final maxDimension = width > height ? width : height;
+          final expandedSize = maxDimension * 1.5;
+          topCircle = CirclePositionData.top(
+            topPosition: height / 2 - expandedSize / 2,
+            rightPosition: width / 2 - expandedSize / 2,
+            size: expandedSize,
+          );
+        } else {
+          topCircle = CirclePositionData.top(
+            topPosition: height / 2 - topCircleRadius,
+            rightPosition: width / 2 - topCircleRadius,
+            size: topCircleRadius * 2,
+          );
+          bottomCircle = CirclePositionData.bottom(
+            bottomPosition: height / 2 - bottomCircleRadius,
+            leftPosition: width / 2 - bottomCircleRadius,
+            size: bottomCircleRadius * 2,
+          );
+        }
+        break;
+    }
+
+    circleColor = state.circleColor == CircleColor.white
+        ? AppColors.background
+        : AppColors.primary;
+
+    circleDuration = state.circlePosition == CirclePosition.center
+        ? AppConstants.largeAnimationDuration
+        : AppConstants.mediumAnimationDuration;
+
+    return (
+      topCircle: topCircle,
+      bottomCircle: bottomCircle,
+      color: circleColor,
+      duration: circleDuration,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<SplashBloc, SplashState>(
@@ -104,108 +198,18 @@ class _SplashPageContentState extends State<_SplashPageContent>
           builder: (context, state) {
             return LayoutBuilder(
               builder: (context, constraints) {
-                final width = constraints.maxWidth;
-                final height = constraints.maxHeight;
-
-                final bottomCircleRadius = width * .3;
-                final topCircleRadius = width * .2;
-                final loaderRadius = width * .05;
-
-                // Calculate positions based on state
-                double bottomCircleBottom;
-                double bottomCircleLeft;
-                double bottomCircleSize;
-
-                double topCircleTop;
-                double topCircleRight;
-                double topCircleSize;
-
-                Color circlesColor;
-
-                switch (state.circlePosition) {
-                  case CirclePosition.hidden:
-                    // Fully off-screen
-                    bottomCircleBottom = -bottomCircleRadius * 2;
-                    bottomCircleLeft = -bottomCircleRadius * 2;
-                    bottomCircleSize = bottomCircleRadius * 2;
-
-                    topCircleTop = -topCircleRadius * 2;
-                    topCircleRight = -topCircleRadius * 2;
-                    topCircleSize = topCircleRadius * 2;
-                    break;
-
-                  case CirclePosition.corners:
-                    // Partially visible in corners
-                    bottomCircleBottom = -bottomCircleRadius;
-                    bottomCircleLeft = -bottomCircleRadius;
-                    bottomCircleSize = bottomCircleRadius * 2;
-
-                    topCircleTop = -topCircleRadius;
-                    topCircleRight = -topCircleRadius;
-                    topCircleSize = topCircleRadius * 2;
-                    break;
-
-                  case CirclePosition.center:
-                    // Moving to center with size changes
-                    if (state.isAnimatingFinal) {
-                      // Small circle shrinks to loader size at center
-                      bottomCircleBottom = height / 2 - loaderRadius;
-                      bottomCircleLeft = width / 2 - loaderRadius;
-                      bottomCircleSize = loaderRadius * 2;
-
-                      // Large circle expands to cover screen from center
-                      final maxDimension = width > height ? width : height;
-                      final expandedSize = maxDimension * 1.5;
-                      topCircleTop = height / 2 - expandedSize / 2;
-                      topCircleRight = width / 2 - expandedSize / 2;
-                      topCircleSize = expandedSize;
-                    } else {
-                      // Default center positions
-                      bottomCircleBottom = height / 2 - bottomCircleRadius;
-                      bottomCircleLeft = width / 2 - bottomCircleRadius;
-                      bottomCircleSize = bottomCircleRadius * 2;
-
-                      topCircleTop = height / 2 - topCircleRadius;
-                      topCircleRight = width / 2 - topCircleRadius;
-                      topCircleSize = topCircleRadius * 2;
-                    }
-                    break;
-                }
-
-                circlesColor = state.circleColor == CircleColor.white
-                    ? Colors.white
-                    : AppColors.primary;
-
-                final circleDuration =
-                    state.circlePosition == CirclePosition.center
-                        ? AppConstants.largeAnimationDuration
-                        : AppConstants.mediumAnimationDuration;
+                final positionData = _calculateCirclePositions(
+                  state,
+                  constraints.maxWidth,
+                  constraints.maxHeight,
+                );
 
                 return Stack(
                   children: [
-                    BlocBuilder<SplashBloc, SplashState>(
-                      builder: (context, state) {
-                        final scale = state is SplashOnboardingActive ? 0.75 : 1.0;
-                        final alignment = state is SplashOnboardingActive 
-                            ? const Alignment(0, -0.3)  // Move up when sheet appears
-                            : Alignment.center;  // Center by default
-                        
-                        return AnimatedAlign(
-                          duration: AppConstants.mediumAnimationDuration,
-                          curve: Curves.linearToEaseOut,
-                          alignment: alignment,
-                          child: AnimatedScale(
-                            scale: scale,
-                            duration: AppConstants.mediumAnimationDuration,
-                            curve: Curves.linearToEaseOut,
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              AppConstants.appBrand,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    // Animated Logo
+                    _buildAnimatedLogo(state),
+
+                    // Onboarding Sheet Listener
                     BlocListener<SplashBloc, SplashState>(
                       listener: (context, state) {
                         if (state is SplashOnboardingActive) {
@@ -214,43 +218,53 @@ class _SplashPageContentState extends State<_SplashPageContent>
                       },
                       child: const SizedBox.shrink(),
                     ),
-                    AnimatedPositioned(
-                      duration: circleDuration,
-                      curve: Curves.linearToEaseOut,
-                      top: topCircleTop,
-                      right: topCircleRight,
-                      child: AnimatedContainer(
-                        duration: circleDuration,
-                        curve: Curves.linearToEaseOut,
-                        width: topCircleSize,
-                        height: topCircleSize,
-                        decoration: BoxDecoration(
-                          color: circlesColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+
+                    // Top Circle
+                    AnimatedCircle(
+                      duration: positionData.duration.inMilliseconds.toDouble(),
+                      top: positionData.topCircle.topPosition,
+                      right: positionData.topCircle.rightPosition,
+                      size: positionData.topCircle.size,
+                      color: positionData.color,
                     ),
-                    AnimatedPositioned(
-                      duration: circleDuration,
-                      curve: Curves.linearToEaseOut,
-                      bottom: bottomCircleBottom,
-                      left: bottomCircleLeft,
-                      child: AnimatedContainer(
-                        duration: circleDuration,
-                        curve: Curves.linearToEaseOut,
-                        width: bottomCircleSize,
-                        height: bottomCircleSize,
-                        decoration: BoxDecoration(
-                          color: circlesColor,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+
+                    // Bottom Circle
+                    AnimatedCircle(
+                      duration: positionData.duration.inMilliseconds.toDouble(),
+                      bottom: positionData.bottomCircle.bottomPosition,
+                      left: positionData.bottomCircle.leftPosition,
+                      size: positionData.bottomCircle.size,
+                      color: positionData.color,
                     ),
                   ],
                 );
               },
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnimatedLogo(SplashState state) {
+    final scale = state is SplashOnboardingActive
+        ? SplashConstants.logoScaleOnboarding
+        : 1.0;
+    final alignment = state is SplashOnboardingActive
+        ? const Alignment(0, SplashConstants.logoAlignmentYOnboarding)
+        : Alignment.center;
+
+    return AnimatedAlign(
+      duration: AppConstants.mediumAnimationDuration,
+      curve: Curves.linearToEaseOut,
+      alignment: alignment,
+      child: AnimatedScale(
+        scale: scale,
+        duration: AppConstants.mediumAnimationDuration,
+        curve: Curves.linearToEaseOut,
+        alignment: Alignment.center,
+        child: Image.asset(
+          AppConstants.appBrand,
         ),
       ),
     );

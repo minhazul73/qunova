@@ -61,7 +61,6 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         // Circles are fully hidden, now ready to show sheet
         add(const SplashCirclesFullyHidden());
       });
-      ;
     } else {
       // Returning user: proceed directly to final animation
       await Future.delayed(AppConstants.mediumAnimationDuration).then((_) {
