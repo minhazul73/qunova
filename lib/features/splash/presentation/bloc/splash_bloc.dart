@@ -45,8 +45,7 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     await Future.delayed(AppConstants.mediumAnimationDuration * 3);
 
     // Check if first launch
-    final hasSeenOnboarding =
-        await _prefsStore.getBool(AppConstants.hasSeenOnboardingKey) ?? false;
+    final hasSeenOnboarding = await _prefsStore.getBool(AppConstants.hasSeenOnboardingKey) ?? false;
     add(SplashFirstLaunchChecked(isFirstLaunch: !hasSeenOnboarding));
   }
 

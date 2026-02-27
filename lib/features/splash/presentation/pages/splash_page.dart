@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -56,11 +57,15 @@ class _SplashPageContentState extends State<_SplashPageContent>
       vsync: this,
       duration: const Duration(milliseconds: 450),
     );
+    // Hide status bar and navigation bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   }
 
   @override
   void dispose() {
     _sheetController.dispose();
+    // Restore status bar and navigation bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }
 
@@ -71,6 +76,7 @@ class _SplashPageContentState extends State<_SplashPageContent>
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.transparent,
       isDismissible: false,
       enableDrag: false,
       builder: (sheetContext) {
@@ -88,9 +94,7 @@ class _SplashPageContentState extends State<_SplashPageContent>
   Widget build(BuildContext context) {
     return BlocListener<SplashBloc, SplashState>(
       listener: (context, state) {
-        if (state is SplashOnboardingActive) {
-          _showOnboardingSheet(context);
-        } else if (state is SplashReadyToNavigate) {
+        if (state is SplashReadyToNavigate) {
           context.goNamed(ContactsPage.name);
         }
       },
@@ -103,67 +107,67 @@ class _SplashPageContentState extends State<_SplashPageContent>
                 final width = constraints.maxWidth;
                 final height = constraints.maxHeight;
 
-                final smallCircleRadius = width * .2;
-                final largeCircleRadius = width * .3;
+                final bottomCircleRadius = width * .3;
+                final topCircleRadius = width * .2;
                 final loaderRadius = width * .05;
 
                 // Calculate positions based on state
-                double smallCircleBottom;
-                double smallCircleLeft;
-                double smallCircleSize;
+                double bottomCircleBottom;
+                double bottomCircleLeft;
+                double bottomCircleSize;
 
-                double largeCircleTop;
-                double largeCircleRight;
-                double largeCircleSize;
+                double topCircleTop;
+                double topCircleRight;
+                double topCircleSize;
 
                 Color circlesColor;
 
                 switch (state.circlePosition) {
                   case CirclePosition.hidden:
                     // Fully off-screen
-                    smallCircleBottom = -smallCircleRadius * 2;
-                    smallCircleLeft = -smallCircleRadius * 2;
-                    smallCircleSize = smallCircleRadius * 2;
+                    bottomCircleBottom = -bottomCircleRadius * 2;
+                    bottomCircleLeft = -bottomCircleRadius * 2;
+                    bottomCircleSize = bottomCircleRadius * 2;
 
-                    largeCircleTop = -largeCircleRadius * 2;
-                    largeCircleRight = -largeCircleRadius * 2;
-                    largeCircleSize = largeCircleRadius * 2;
+                    topCircleTop = -topCircleRadius * 2;
+                    topCircleRight = -topCircleRadius * 2;
+                    topCircleSize = topCircleRadius * 2;
                     break;
 
                   case CirclePosition.corners:
                     // Partially visible in corners
-                    smallCircleBottom = -smallCircleRadius;
-                    smallCircleLeft = -smallCircleRadius;
-                    smallCircleSize = smallCircleRadius * 2;
+                    bottomCircleBottom = -bottomCircleRadius;
+                    bottomCircleLeft = -bottomCircleRadius;
+                    bottomCircleSize = bottomCircleRadius * 2;
 
-                    largeCircleTop = -largeCircleRadius;
-                    largeCircleRight = -largeCircleRadius;
-                    largeCircleSize = largeCircleRadius * 2;
+                    topCircleTop = -topCircleRadius;
+                    topCircleRight = -topCircleRadius;
+                    topCircleSize = topCircleRadius * 2;
                     break;
 
                   case CirclePosition.center:
                     // Moving to center with size changes
                     if (state.isAnimatingFinal) {
                       // Small circle shrinks to loader size at center
-                      smallCircleBottom = height / 2 - loaderRadius;
-                      smallCircleLeft = width / 2 - loaderRadius;
-                      smallCircleSize = loaderRadius * 2;
+                      bottomCircleBottom = height / 2 - loaderRadius;
+                      bottomCircleLeft = width / 2 - loaderRadius;
+                      bottomCircleSize = loaderRadius * 2;
 
                       // Large circle expands to cover screen from center
                       final maxDimension = width > height ? width : height;
                       final expandedSize = maxDimension * 1.5;
-                      largeCircleTop = height / 2 - expandedSize / 2;
-                      largeCircleRight = width / 2 - expandedSize / 2;
-                      largeCircleSize = expandedSize;
+                      topCircleTop = height / 2 - expandedSize / 2;
+                      topCircleRight = width / 2 - expandedSize / 2;
+                      topCircleSize = expandedSize;
                     } else {
                       // Default center positions
-                      smallCircleBottom = height / 2 - smallCircleRadius;
-                      smallCircleLeft = width / 2 - smallCircleRadius;
-                      smallCircleSize = smallCircleRadius * 2;
+                      bottomCircleBottom = height / 2 - bottomCircleRadius;
+                      bottomCircleLeft = width / 2 - bottomCircleRadius;
+                      bottomCircleSize = bottomCircleRadius * 2;
 
-                      largeCircleTop = height / 2 - largeCircleRadius;
-                      largeCircleRight = width / 2 - largeCircleRadius;
-                      largeCircleSize = largeCircleRadius * 2;
+                      topCircleTop = height / 2 - topCircleRadius;
+                      topCircleRight = width / 2 - topCircleRadius;
+                      topCircleSize = topCircleRadius * 2;
                     }
                     break;
                 }
@@ -179,21 +183,47 @@ class _SplashPageContentState extends State<_SplashPageContent>
 
                 return Stack(
                   children: [
-                    Center(
-                      child: Image.asset(
-                        AppConstants.appBrand,
-                      ),
+                    BlocBuilder<SplashBloc, SplashState>(
+                      builder: (context, state) {
+                        final scale = state is SplashOnboardingActive ? 0.75 : 1.0;
+                        final alignment = state is SplashOnboardingActive 
+                            ? const Alignment(0, -0.3)  // Move up when sheet appears
+                            : Alignment.center;  // Center by default
+                        
+                        return AnimatedAlign(
+                          duration: AppConstants.mediumAnimationDuration,
+                          curve: Curves.linearToEaseOut,
+                          alignment: alignment,
+                          child: AnimatedScale(
+                            scale: scale,
+                            duration: AppConstants.mediumAnimationDuration,
+                            curve: Curves.linearToEaseOut,
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              AppConstants.appBrand,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    BlocListener<SplashBloc, SplashState>(
+                      listener: (context, state) {
+                        if (state is SplashOnboardingActive) {
+                          _showOnboardingSheet(context);
+                        }
+                      },
+                      child: const SizedBox.shrink(),
                     ),
                     AnimatedPositioned(
                       duration: circleDuration,
                       curve: Curves.linearToEaseOut,
-                      top: largeCircleTop,
-                      right: largeCircleRight,
+                      top: topCircleTop,
+                      right: topCircleRight,
                       child: AnimatedContainer(
                         duration: circleDuration,
                         curve: Curves.linearToEaseOut,
-                        width: largeCircleSize,
-                        height: largeCircleSize,
+                        width: topCircleSize,
+                        height: topCircleSize,
                         decoration: BoxDecoration(
                           color: circlesColor,
                           shape: BoxShape.circle,
@@ -203,13 +233,13 @@ class _SplashPageContentState extends State<_SplashPageContent>
                     AnimatedPositioned(
                       duration: circleDuration,
                       curve: Curves.linearToEaseOut,
-                      bottom: smallCircleBottom,
-                      left: smallCircleLeft,
+                      bottom: bottomCircleBottom,
+                      left: bottomCircleLeft,
                       child: AnimatedContainer(
                         duration: circleDuration,
                         curve: Curves.linearToEaseOut,
-                        width: smallCircleSize,
-                        height: smallCircleSize,
+                        width: bottomCircleSize,
+                        height: bottomCircleSize,
                         decoration: BoxDecoration(
                           color: circlesColor,
                           shape: BoxShape.circle,

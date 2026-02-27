@@ -38,7 +38,7 @@ class FirstLaunchSheet extends StatelessWidget {
               'Lorem ipsum dolor sit amet consectetur. Pellentesque fames '
               'lobortis vestibulum nisi nulla egestas nibh tincidunt nunc.',
               style: textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withOpacity(0.85),
+                color: Colors.white.withValues(alpha: 0.85),
                 height: 1.4,
               ),
             ),
