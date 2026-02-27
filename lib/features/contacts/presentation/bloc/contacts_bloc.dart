@@ -54,6 +54,19 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     on<ResetFiltersEvent>(_onResetFilters);
   }
 
+  /// Sorts contacts alphabetically by name
+  List<ContactEntity> _sortContactsByName(
+    List<ContactEntity> contacts,
+  ) {
+    final sorted = List<ContactEntity>.from(contacts);
+    sorted.sort((a, b) {
+      final nameA = a.name ?? '';
+      final nameB = b.name ?? '';
+      return nameA.toLowerCase().compareTo(nameB.toLowerCase());
+    });
+    return sorted;
+  }
+
   /// Handles loading contacts from use case
   Future<void> _onLoadContacts(
     LoadContactsEvent event,
@@ -67,16 +80,20 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
       final contactsData = await _repository.getContacts();
       final recentContacts = await _getRecentContactsUseCase.call();
 
+      // Sort contacts alphabetically by name
+      final sortedContacts = _sortContactsByName(contactsData.contacts);
+      final sortedRecentContacts = _sortContactsByName(recentContacts);
+
       AppLog.d(
-        'ContactsBloc: Loaded ${contactsData.contacts.length} contacts '
-        'and ${recentContacts.length} recent contacts',
+        'ContactsBloc: Loaded ${sortedContacts.length} contacts '
+        'and ${sortedRecentContacts.length} recent contacts',
       );
 
       emit(
         ContactsLoaded(
-          allContacts: contactsData.contacts,
-          recentContacts: recentContacts,
-          displayedContacts: contactsData.contacts,
+          allContacts: sortedContacts,
+          recentContacts: sortedRecentContacts,
+          displayedContacts: sortedContacts,
           categories: contactsData.categories,
           selectedCategoryId: 'all',
           searchQuery: '',
@@ -125,6 +142,9 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
             .toList();
       }
 
+      // Sort results by name
+      filtered = _sortContactsByName(filtered);
+
       final updatedState = currentState.copyWith(
         selectedCategoryId: event.categoryId,
         displayedContacts: filtered,
@@ -172,6 +192,9 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
             })
             .toList();
       }
+
+      // Sort results by name
+      filtered = _sortContactsByName(filtered);
 
       // Update state with search results
       final updatedState = currentState.copyWith(
@@ -292,8 +315,11 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     try {
       AppLog.d('ContactsBloc: Resetting all filters and search');
 
+      // Sort contacts by name
+      final sortedContacts = _sortContactsByName(currentState.allContacts);
+
       final updatedState = currentState.copyWith(
-        displayedContacts: currentState.allContacts,
+        displayedContacts: sortedContacts,
         selectedCategoryId: 'all',
         searchQuery: '',
         isSearchActive: false,

@@ -31,10 +31,13 @@ dependencies:
   go_router: ^17.1.0
 
   # Local Persistence
-  shared_preferences: ^2.3.3
+  shared_preferences: ^2.5.4
 
   # Loading Indicators
   flutter_easyloading: ^3.0.5
+
+  # Alphabetical ListView
+  azlistview: ^2.0.0
 
   # Date Formatting (comes with Flutter SDK)
   intl: ^0.20.2
