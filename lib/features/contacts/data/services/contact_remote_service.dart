@@ -5,13 +5,8 @@ import '../../../../core/network/api_exception.dart';
 import '../models/category_model.dart';
 import '../models/contact_model.dart';
 
-/// Remote data source for fetching contacts from the API
-class ContactRemoteDataSource {
-  final ApiClient _apiClient;
-
-  ContactRemoteDataSource({required ApiClient apiClient})
-    : _apiClient = apiClient;
-
+/// Abstract contract for remote contact data operations
+abstract class ContactRemoteService {
   /// Fetches contacts and categories from the API
   ///
   /// Returns a tuple containing:
@@ -20,9 +15,21 @@ class ContactRemoteDataSource {
   ///
   /// Throws [ApiException] on error
   Future<({List<CategoryModel> categories, List<ContactModel> contacts})>
+      fetchContacts();
+}
+
+/// Remote data source for fetching contacts from the API
+class ContactRemoteServiceImpl implements ContactRemoteService {
+  final ApiClient _apiClient;
+
+  ContactRemoteServiceImpl({required ApiClient apiClient})
+    : _apiClient = apiClient;
+
+  @override
+  Future<({List<CategoryModel> categories, List<ContactModel> contacts})>
   fetchContacts() async {
     try {
-      AppLog.d('ContactRemoteDataSource: Fetching contacts from API');
+      AppLog.d('ContactRemoteService: Fetching contacts from API');
 
       final response = await _apiClient.get(ApiConstants.contactsUrl);
 
@@ -56,16 +63,16 @@ class ContactRemoteDataSource {
           .toList();
 
       AppLog.d(
-        'ContactRemoteDataSource: Fetched ${categories.length} '
+        'ContactRemoteService: Fetched ${categories.length} '
         'categories and ${contacts.length} contacts (filtered from ${allContacts.length})',
       );
 
       return (categories: categories, contacts: contacts);
     } on ApiException {
-      AppLog.e('ContactRemoteDataSource: API exception occurred');
+      AppLog.e('ContactRemoteService: API exception occurred');
       rethrow;
     } catch (e) {
-      AppLog.e('ContactRemoteDataSource: Unexpected error: $e');
+      AppLog.e('ContactRemoteService: Unexpected error: $e');
       throw UnknownException(e.toString());
     }
   }

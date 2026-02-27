@@ -2,20 +2,20 @@ import '../../../../core/logging/app_log.dart';
 import '../../domain/entities/category_entity.dart';
 import '../../domain/entities/contact_entity.dart';
 import '../../domain/repositories/contact_repository.dart';
-import '../datasources/contact_local_datasource.dart';
-import '../datasources/contact_remote_datasource.dart';
+import '../services/contact_local_service.dart';
+import '../services/contact_remote_service.dart';
 import '../models/contact_model.dart';
 
 /// Implementation of ContactRepository that combines remote and local data
 class ContactRepositoryImpl implements ContactRepository {
-  final ContactRemoteDataSource _remoteDataSource;
-  final ContactLocalDataSource _localDataSource;
+  final ContactRemoteService _remoteService;
+  final ContactLocalService _localService;
 
   ContactRepositoryImpl({
-    required ContactRemoteDataSource remoteDataSource,
-    required ContactLocalDataSource localDataSource,
-  }) : _remoteDataSource = remoteDataSource,
-       _localDataSource = localDataSource;
+    required ContactRemoteService remoteService,
+    required ContactLocalService localService,
+  }) : _remoteService = remoteService,
+       _localService = localService;
 
   @override
   Future<({List<CategoryEntity> categories, List<ContactEntity> contacts})>
@@ -24,10 +24,10 @@ class ContactRepositoryImpl implements ContactRepository {
       AppLog.d('ContactRepositoryImpl: Fetching contacts');
 
       // Fetch remote contacts
-      final remote = await _remoteDataSource.fetchContacts();
+      final remote = await _remoteService.fetchContacts();
 
       // Fetch local contacts
-      final localContacts = await _localDataSource.getLocalContacts();
+      final localContacts = await _localService.getLocalContacts();
 
       // Merge contacts (local contacts override remote if same ID)
       final Map<String, ContactEntity> contactMap = {};
@@ -59,7 +59,7 @@ class ContactRepositoryImpl implements ContactRepository {
   @override
   Future<List<String>> getRecentContactIds() async {
     try {
-      return await _localDataSource.getRecentContactIds();
+      return await _localService.getRecentContactIds();
     } catch (e) {
       AppLog.e('ContactRepositoryImpl: Error getting recent contact IDs: $e');
       return [];
@@ -109,7 +109,7 @@ class ContactRepositoryImpl implements ContactRepository {
   @override
   Future<bool> markContactOpened(String contactId) async {
     try {
-      return await _localDataSource.markContactOpened(contactId);
+      return await _localService.markContactOpened(contactId);
     } catch (e) {
       AppLog.e('ContactRepositoryImpl: Error marking contact opened: $e');
       return false;
@@ -134,7 +134,7 @@ class ContactRepositoryImpl implements ContactRepository {
         createdAt: contact.createdAt,
       );
 
-      return await _localDataSource.saveLocalContact(model);
+      return await _localService.saveLocalContact(model);
     } catch (e) {
       AppLog.e('ContactRepositoryImpl: Error saving contact: $e');
       return false;
@@ -144,7 +144,7 @@ class ContactRepositoryImpl implements ContactRepository {
   @override
   Future<bool> deleteLocalContact(String contactId) async {
     try {
-      return await _localDataSource.deleteLocalContact(contactId);
+      return await _localService.deleteLocalContact(contactId);
     } catch (e) {
       AppLog.e('ContactRepositoryImpl: Error deleting local contact: $e');
       return false;
@@ -154,7 +154,7 @@ class ContactRepositoryImpl implements ContactRepository {
   @override
   Future<bool> clearRecentHistory() async {
     try {
-      return await _localDataSource.clearRecentContacts();
+      return await _localService.clearRecentContacts();
     } catch (e) {
       AppLog.e('ContactRepositoryImpl: Error clearing recent history: $e');
       return false;
@@ -164,7 +164,7 @@ class ContactRepositoryImpl implements ContactRepository {
   @override
   Future<bool> clearLocalContacts() async {
     try {
-      return await _localDataSource.clearLocalContacts();
+      return await _localService.clearLocalContacts();
     } catch (e) {
       AppLog.e('ContactRepositoryImpl: Error clearing local contacts: $e');
       return false;

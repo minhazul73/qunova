@@ -4,8 +4,38 @@ import '../../../../core/logging/app_log.dart';
 import '../../../../core/persistence/kv_store.dart';
 import '../models/contact_model.dart';
 
+/// Abstract contract for local contact data operations
+abstract class ContactLocalService {
+  /// Gets the list of recent contact IDs (ordered by most recent first)
+  Future<List<String>> getRecentContactIds();
+
+  /// Marks a contact as opened (adds to recent list)
+  ///
+  /// If the contact was already in the list, it's moved to the front.
+  /// List is capped at max recent contacts.
+  Future<bool> markContactOpened(String contactId);
+
+  /// Clears all recent contacts
+  Future<bool> clearRecentContacts();
+
+  /// Gets all locally stored contacts
+  Future<List<ContactModel>> getLocalContacts();
+
+  /// Saves a new local contact or updates existing one
+  ///
+  /// If a contact with the same ID exists, it's updated.
+  /// Otherwise, the contact is added to the list.
+  Future<bool> saveLocalContact(ContactModel contact);
+
+  /// Deletes a local contact by ID
+  Future<bool> deleteLocalContact(String contactId);
+
+  /// Clears all locally stored contacts
+  Future<bool> clearLocalContacts();
+}
+
 /// Local data source for managing recent contacts and locally added contacts
-class ContactLocalDataSource {
+class ContactLocalServiceImpl implements ContactLocalService {
   final KvStore _kvStore;
 
   // Storage keys
@@ -13,29 +43,26 @@ class ContactLocalDataSource {
   static const String _localContactsKey = 'local_contacts';
   static const int _maxRecentContacts = 20;
 
-  ContactLocalDataSource({required KvStore kvStore}) : _kvStore = kvStore;
+  ContactLocalServiceImpl({required KvStore kvStore}) : _kvStore = kvStore;
 
   // ========== Recent Contacts ==========
 
-  /// Gets the list of recent contact IDs (ordered by most recent first)
+  @override
   Future<List<String>> getRecentContactIds() async {
     try {
       final ids = await _kvStore.getStringList(_recentContactIdsKey);
       AppLog.d(
-        'ContactLocalDataSource: Retrieved ${ids?.length ?? 0} '
+        'ContactLocalService: Retrieved ${ids?.length ?? 0} '
         'recent contact IDs',
       );
       return ids ?? [];
     } catch (e) {
-      AppLog.e('ContactLocalDataSource: Error retrieving recent IDs: $e');
+      AppLog.e('ContactLocalService: Error retrieving recent IDs: $e');
       return [];
     }
   }
 
-  /// Marks a contact as opened (adds to recent list)
-  ///
-  /// If the contact was already in the list, it's moved to the front.
-  /// List is capped at [_maxRecentContacts] items.
+  @override
   Future<bool> markContactOpened(String contactId) async {
     try {
       final currentIds = await getRecentContactIds();
@@ -54,56 +81,53 @@ class ContactLocalDataSource {
         cappedIds,
       );
       AppLog.d(
-        'ContactLocalDataSource: Marked contact $contactId as opened '
+        'ContactLocalService: Marked contact $contactId as opened '
         '(${cappedIds.length} recent contacts)',
       );
       return success;
     } catch (e) {
-      AppLog.e('ContactLocalDataSource: Error marking contact opened: $e');
+      AppLog.e('ContactLocalService: Error marking contact opened: $e');
       return false;
     }
   }
 
-  /// Clears all recent contacts
+  @override
   Future<bool> clearRecentContacts() async {
     try {
       final success = await _kvStore.remove(_recentContactIdsKey);
-      AppLog.d('ContactLocalDataSource: Cleared recent contacts');
+      AppLog.d('ContactLocalService: Cleared recent contacts');
       return success;
     } catch (e) {
-      AppLog.e('ContactLocalDataSource: Error clearing recent contacts: $e');
+      AppLog.e('ContactLocalService: Error clearing recent contacts: $e');
       return false;
     }
   }
 
   // ========== Local Contacts ==========
 
-  /// Gets all locally stored contacts
+  @override
   Future<List<ContactModel>> getLocalContacts() async {
     try {
       final jsonString = await _kvStore.getString(_localContactsKey);
       if (jsonString == null || jsonString.isEmpty) {
-        AppLog.d('ContactLocalDataSource: No local contacts found');
+        AppLog.d('ContactLocalService: No local contacts found');
         return [];
       }
 
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
       final contacts = ContactModel.fromJsonList(jsonList);
       AppLog.d(
-        'ContactLocalDataSource: Retrieved ${contacts.length} '
+        'ContactLocalService: Retrieved ${contacts.length} '
         'local contacts',
       );
       return contacts;
     } catch (e) {
-      AppLog.e('ContactLocalDataSource: Error retrieving local contacts: $e');
+      AppLog.e('ContactLocalService: Error retrieving local contacts: $e');
       return [];
     }
   }
 
-  /// Saves a new local contact or updates existing one
-  ///
-  /// If a contact with the same ID exists, it's updated.
-  /// Otherwise, the contact is added to the list.
+  @override
   Future<bool> saveLocalContact(ContactModel contact) async {
     try {
       final currentContacts = await getLocalContacts();
@@ -116,12 +140,12 @@ class ContactLocalDataSource {
       if (existingIndex != -1) {
         // Update existing
         currentContacts[existingIndex] = contact;
-        AppLog.d('ContactLocalDataSource: Updated local contact ${contact.id}');
+        AppLog.d('ContactLocalService: Updated local contact ${contact.id}');
       } else {
         // Add new
         currentContacts.add(contact);
         AppLog.d(
-          'ContactLocalDataSource: Added new local contact ${contact.id}',
+          'ContactLocalService: Added new local contact ${contact.id}',
         );
       }
 
@@ -132,12 +156,12 @@ class ContactLocalDataSource {
 
       return success;
     } catch (e) {
-      AppLog.e('ContactLocalDataSource: Error saving local contact: $e');
+      AppLog.e('ContactLocalService: Error saving local contact: $e');
       return false;
     }
   }
 
-  /// Deletes a local contact by ID
+  @override
   Future<bool> deleteLocalContact(String contactId) async {
     try {
       final currentContacts = await getLocalContacts();
@@ -148,7 +172,7 @@ class ContactLocalDataSource {
       if (currentContacts.length == updatedContacts.length) {
         // Contact not found
         AppLog.d(
-          'ContactLocalDataSource: Contact $contactId not found for deletion',
+          'ContactLocalService: Contact $contactId not found for deletion',
         );
         return false;
       }
@@ -158,22 +182,22 @@ class ContactLocalDataSource {
       final jsonString = jsonEncode(jsonList);
       final success = await _kvStore.setString(_localContactsKey, jsonString);
 
-      AppLog.d('ContactLocalDataSource: Deleted local contact $contactId');
+      AppLog.d('ContactLocalService: Deleted local contact $contactId');
       return success;
     } catch (e) {
-      AppLog.e('ContactLocalDataSource: Error deleting local contact: $e');
+      AppLog.e('ContactLocalService: Error deleting local contact: $e');
       return false;
     }
   }
 
-  /// Clears all locally stored contacts
+  @override
   Future<bool> clearLocalContacts() async {
     try {
       final success = await _kvStore.remove(_localContactsKey);
-      AppLog.d('ContactLocalDataSource: Cleared all local contacts');
+      AppLog.d('ContactLocalService: Cleared all local contacts');
       return success;
     } catch (e) {
-      AppLog.e('ContactLocalDataSource: Error clearing local contacts: $e');
+      AppLog.e('ContactLocalService: Error clearing local contacts: $e');
       return false;
     }
   }

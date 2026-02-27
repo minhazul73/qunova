@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/persistence/shared_prefs_store.dart';
+import '../../../../injection.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../contacts/presentation/pages/contacts_page.dart';
 import '../bloc/splash_bloc.dart';
@@ -20,24 +20,9 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SharedPrefsStore>(
-      future: SharedPrefsStore.create(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
-        return BlocProvider(
-          create: (context) => SplashBloc(
-            prefsStore: snapshot.data!,
-          )..add(const SplashStarted()),
-          child: const _SplashPageContent(),
-        );
-      },
+    return BlocProvider<SplashBloc>(
+      create: (context) => sl<SplashBloc>()..add(const SplashStarted()),
+      child: const _SplashPageContent(),
     );
   }
 }

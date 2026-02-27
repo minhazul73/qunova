@@ -34,14 +34,7 @@ migrate_working_dir/
 /coverage/
 
 # Internal tracking files
-gx.md
-pz.md
-tk.md
-wf.md
-zn.md
-pt.md
-rf.json
-pmt.md
+.tracks/
 .images/
 
 # Symbolication related
