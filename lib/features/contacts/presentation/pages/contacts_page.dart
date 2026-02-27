@@ -9,13 +9,9 @@ class ContactsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EasyLoading.show();
-     Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       EasyLoading.dismiss();
     });
-    return const Scaffold(
-      body: Center(
-        child: Text('Contacts (placeholder)'),
-      ),
-    );
+    return const Scaffold(body: Center(child: Text('Contacts (placeholder)')));
   }
 }
