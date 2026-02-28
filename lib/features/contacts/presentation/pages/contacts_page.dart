@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/custom_fab.dart';
 import '../bloc/contacts_bloc.dart';
 import '../bloc/contacts_event.dart';
 import '../bloc/contacts_state.dart';
@@ -64,7 +65,7 @@ class _ContactsPageState extends State<ContactsPage>
   }
 
   void _handleMenuTap() {
-    // Menu action - placeholder for now
+    // Menu action - placeholder
   }
 
 
@@ -137,10 +138,8 @@ class _ContactsPageState extends State<ContactsPage>
           return const Center(child: CircularProgressIndicator());
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: CustomFab(
         onPressed: _showAddContactSheet,
-        backgroundColor: AppColors.fab,
-        child: const Icon(Icons.add, color: AppColors.onPrimary),
       ),
     );
   }

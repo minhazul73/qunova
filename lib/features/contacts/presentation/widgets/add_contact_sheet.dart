@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
@@ -116,7 +115,20 @@ class _AddContactSheetState extends State<AddContactSheet> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 16.0,
                 children: [
+                  // Drag Handle Bar
+                  Center(
+                    child: Container(
+                      width: 80.0,
+                      height: 4.0,
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                      decoration: BoxDecoration(
+                        color: AppColors.divider,
+                        borderRadius: BorderRadius.circular(2.0),
+                      ),
+                    ),
+                  ),
                   // Title
                   Text(
                     'Add New Contact',
@@ -124,7 +136,7 @@ class _AddContactSheetState extends State<AddContactSheet> {
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: 24.0),
+                  // const SizedBox(height: 16.0),
 
                   // Name Field
                   _buildTextField(
@@ -134,7 +146,6 @@ class _AddContactSheetState extends State<AddContactSheet> {
                     isRequired: true,
                     icon: Icons.person_outline,
                   ),
-                  const SizedBox(height: 16.0),
 
                   // Phone Field
                   _buildTextField(
@@ -155,7 +166,6 @@ class _AddContactSheetState extends State<AddContactSheet> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 16.0),
 
                   // Designation Field
                   _buildTextField(
@@ -164,7 +174,6 @@ class _AddContactSheetState extends State<AddContactSheet> {
                     hint: 'e.g., Manager, Engineer',
                     icon: Icons.work_outline,
                   ),
-                  const SizedBox(height: 16.0),
 
                   // Company Field
                   _buildTextField(
@@ -173,69 +182,63 @@ class _AddContactSheetState extends State<AddContactSheet> {
                     hint: 'e.g., PlnZe, Google',
                     icon: Icons.business_outlined,
                   ),
-                  const SizedBox(height: 16.0),
 
                   // Relation Dropdown
                   _buildDropdownField(),
-                  const SizedBox(height: 32.0),
 
-                  // Action Buttons
-                  Row(
-                    children: [
-                      // Cancel Button
-                      Expanded(
-                        child: SizedBox(
-                          height: 48.0,
-                          child: OutlinedButton(
-                            onPressed: _isSaving ? null : _handleCancel,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.textSecondary,
-                              side: const BorderSide(
-                                color: AppColors.divider,
-                                width: 1.5,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24.0),
-                              ),
-                              textStyle: textTheme.labelLarge,
-                            ),
-                            child: const Text('Cancel'),
-                          ),
+                  const SizedBox(height: 4.0),
+
+                  // Save Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48.0,
+                    child: ElevatedButton(
+                      onPressed: _isSaving ? null : _handleSave,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.onPrimary,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0),
                         ),
+                        textStyle: textTheme.labelLarge,
                       ),
-                      const SizedBox(width: 12.0),
-                      // Save Button
-                      Expanded(
-                        child: SizedBox(
-                          height: 48.0,
-                          child: ElevatedButton(
-                            onPressed: _isSaving ? null : _handleSave,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.onPrimary,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(24.0),
+                      child: _isSaving
+                          ? const SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.onPrimary,
+                                ),
                               ),
-                              textStyle: textTheme.labelLarge,
-                            ),
-                            child: _isSaving
-                                ? const SizedBox(
-                                    width: 20.0,
-                                    height: 20.0,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.0,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        AppColors.onPrimary,
-                                      ),
-                                    ),
-                                  )
-                                : const Text('Save Contact'),
-                          ),
-                        ),
-                      ),
-                    ],
+                            )
+                          : const Text('Save Contact'),
+                    ),
                   ),
+                  // Cancel Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48.0,
+                    child: OutlinedButton(
+                      onPressed: _isSaving ? null : _handleCancel,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textSecondary,
+                        side: const BorderSide(
+                          color: AppColors.divider,
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                        textStyle: textTheme.labelLarge,
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                
+                  
                 ],
               ),
             ),
@@ -363,7 +366,7 @@ class _AddContactSheetState extends State<AddContactSheet> {
         const SizedBox(height: 8.0),
         // Dropdown
         DropdownButtonFormField<String>(
-          value: _selectedRelation,
+          initialValue: _selectedRelation,
           decoration: InputDecoration(
             hintText: 'Select relation',
             hintStyle: textTheme.bodyMedium?.copyWith(

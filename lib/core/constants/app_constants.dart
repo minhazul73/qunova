@@ -8,6 +8,7 @@ class AppConstants {
   /// Asset paths
   static const String appBrand = 'assets/images/png/app_brand.png';
   static const String appLogo = 'assets/images/png/app_logo.png';
+  static const String floatingIcon = 'assets/svg/floating-icon.svg';
 
   /// Loading indicator size
   static const double loaderSize = 60.0;

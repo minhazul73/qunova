@@ -22,75 +22,79 @@ class ContactListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 12.0,
-        ),
-        child: Column(
-          children: [
-            Row(
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
+            child: Column(
               children: [
-                // Avatar
-                _buildAvatar(),
-                const SizedBox(width: 16.0),
-                // Contact Information
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Name
-                      Text(
-                        contact.name ?? 'Unknown',
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                Row(
+                  children: [
+                    // Avatar
+                    _buildAvatar(),
+                    const SizedBox(width: 16.0),
+                    // Contact Information
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Name
+                          Text(
+                            contact.name ?? 'Unknown',
+                            style: textTheme.bodyLarge?.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4.0),
+                          // Phone Number
+                          if (contact.phone != null &&
+                              contact.phone!.isNotEmpty)
+                            Text(
+                              contact.phone!,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          // Phone (if no subtitle)
+                          if ((contact.subtitle == null ||
+                                  contact.subtitle!.isEmpty) &&
+                              contact.phone != null &&
+                              contact.phone!.isNotEmpty)
+                            Text(
+                              contact.phone!,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
                       ),
-                      const SizedBox(height: 4.0),
-                      // Subtitle (Company • Role)
-                      if (contact.subtitle != null &&
-                          contact.subtitle!.isNotEmpty)
-                        Text(
-                          contact.subtitle!,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      // Phone (if no subtitle)
-                      if ((contact.subtitle == null ||
-                              contact.subtitle!.isEmpty) &&
-                          contact.phone != null &&
-                          contact.phone!.isNotEmpty)
-                        Text(
-                          contact.phone!,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                // Divider
               ],
             ),
-            // Divider
-            Container(
-              margin: const EdgeInsets.only(left: 56.0, top: 12.0),
-              height: 1.0,
-              color: AppColors.divider,
-            ),
-          ],
+          ),
         ),
-      ),
+        Container(
+          margin: const EdgeInsets.only(left: 24.0, right: 32.0),
+          height: 1.0,
+          color: AppColors.divider,
+        ),
+      ],
     );
   }
 
@@ -98,7 +102,7 @@ class ContactListItem extends StatelessWidget {
     return Container(
       width: 40.0,
       height: 40.0,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.chipUnselectedBackground,
       ),
