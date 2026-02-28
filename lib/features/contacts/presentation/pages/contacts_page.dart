@@ -2,17 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/custom_app_bar.dart';
 import '../bloc/contacts_bloc.dart';
 import '../bloc/contacts_event.dart';
 import '../bloc/contacts_state.dart';
+import '../tabs/contacts_tab.dart';
+import '../tabs/recent_tab.dart';
 import '../widgets/add_contact_sheet.dart';
-import '../widgets/category_chip.dart';
-import '../widgets/contact_list_item.dart';
-import '../widgets/empty_state_widget.dart';
-import '../widgets/contacts_tab_list.dart';
 import '../widgets/error_state_widget.dart';
 import '../widgets/loading_shimmer.dart';
-import '../widgets/search_bar_widget.dart';
 
 /// Main contacts page with tabs, search, filtering, and contact list
 ///
@@ -30,7 +28,6 @@ class ContactsPage extends StatefulWidget {
 class _ContactsPageState extends State<ContactsPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  bool _isSearchActive = false;
 
   @override
   void initState() {
@@ -55,22 +52,19 @@ class _ContactsPageState extends State<ContactsPage>
           ? ContactsTab.contacts
           : ContactsTab.recent;
       context.read<ContactsBloc>().add(TabChangedEvent(tab));
-
-      // Hide search when switching tabs
-      if (_isSearchActive) {
-        setState(() => _isSearchActive = false);
-      }
     }
   }
 
-  void _toggleSearch() {
-    setState(() {
-      _isSearchActive = !_isSearchActive;
-      if (!_isSearchActive) {
-        // Clear search when hiding search bar
-        context.read<ContactsBloc>().add(const SearchContactsEvent(''));
-      }
-    });
+  void _handleSearchChanged(String query) {
+    context.read<ContactsBloc>().add(SearchContactsEvent(query));
+  }
+
+  void _handleSearchCleared() {
+    context.read<ContactsBloc>().add(const SearchContactsEvent(''));
+  }
+
+  void _handleMenuTap() {
+    // Menu action - placeholder for now
   }
 
 
@@ -152,141 +146,27 @@ class _ContactsPageState extends State<ContactsPage>
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: AppColors.primaryDark,
-      elevation: 2,
-      title: _isSearchActive
-          ? TextField(
-              onChanged: (query) {
-                context.read<ContactsBloc>().add(SearchContactsEvent(query));
-              },
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: 'Search',
-                hintStyle: TextStyle(color: AppColors.textSecondary),
-                border: InputBorder.none,
-                isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 8),
-              ),
-              style: const TextStyle(color: AppColors.onPrimary),
-            )
-          : const Text(
-              'Antripe',
-              style: TextStyle(
-                color: AppColors.onPrimary,
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            _isSearchActive ? Icons.close : Icons.search,
-            color: AppColors.onPrimary,
-          ),
-          onPressed: _toggleSearch,
-        ),
-        if (!_isSearchActive)
-          IconButton(
-            icon: const Icon(
-              Icons.more_vert,
-              color: AppColors.onPrimary,
-            ),
-            onPressed: () {
-              // Menu action - placeholder for now
-            },
-          ),
-      ],
-      bottom: TabBar(
-        controller: _tabController,
-        indicatorColor: AppColors.onPrimary,
-        indicatorWeight: 2,
-        isScrollable: false,
-        labelColor: AppColors.tabActive,
-        unselectedLabelColor: AppColors.tabInactive,
-        tabs: const [
-          Tab(text: 'Contact'),
-          Tab(text: 'Recent'),
-        ],
-      ),
+    return CustomAppBar(
+      tabController: _tabController,
+      tabLabels: const ['Contact', 'Recent'],
+      onSearchChanged: _handleSearchChanged,
+      onSearchCleared: _handleSearchCleared,
+      onMenuTap: _handleMenuTap,
+      searchHint: 'Search contacts...',
     );
   }
 
   Widget _buildLoadedState(ContactsLoaded state) {
-    return Column(
+    return TabBarView(
+      controller: _tabController,
       children: [
-        // Category chips (only show on Contact tab)
-        if (state.activeTab == ContactsTab.contacts)
-          _buildCategoryChips(state),
-
-        // Contact list
-        Expanded(
-          child: _buildContactList(state),
+        AllContactsTab(
+          onAddContact: _showAddContactSheet,
+        ),
+        RecentTab(
+          onAddContact: _showAddContactSheet,
         ),
       ],
-    );
-  }
-
-  Widget _buildCategoryChips(ContactsLoaded state) {
-    return Container(
-      height: 110,
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        itemCount: state.categories.length,
-        itemBuilder: (context, index) {
-          final category = state.categories[index];
-          final isSelected = category.id == state.selectedCategoryId;
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: CategoryChip(
-              categoryId: category.id,
-              categoryName: category.name,
-              isSelected: isSelected,
-              onTap: () {
-                context
-                    .read<ContactsBloc>()
-                    .add(FilterByCategoryEvent(category.id));
-              },
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildContactList(ContactsLoaded state) {
-    final contacts = state.displayedContacts;
-
-    if (state.activeTab == ContactsTab.contacts) {
-      return ContactsTabList(
-        contacts: contacts,
-        searchQuery: state.searchQuery,
-        onAddContact: _showAddContactSheet,
-      );
-    }
-
-    // Recent tab: simple list
-    if (contacts.isEmpty) {
-      return EmptyStateWidget(
-        message: 'No recent contacts',
-        onAddContact: _showAddContactSheet,
-      );
-    }
-
-    return ListView.builder(
-      itemCount: contacts.length,
-      itemBuilder: (context, index) {
-        final contact = contacts[index];
-        return ContactListItem(
-          contact: contact,
-          onTap: () {
-            context.read<ContactsBloc>().add(ContactOpenedEvent(contact.id));
-          },
-        );
-      },
     );
   }
 }

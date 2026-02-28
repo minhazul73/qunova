@@ -93,7 +93,8 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
         ContactsLoaded(
           allContacts: sortedContacts,
           recentContacts: sortedRecentContacts,
-          displayedContacts: sortedContacts,
+          filteredAllContacts: sortedContacts,
+          filteredRecentContacts: sortedRecentContacts,
           categories: contactsData.categories,
           selectedCategoryId: 'all',
           searchQuery: '',
@@ -147,7 +148,7 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
 
       final updatedState = currentState.copyWith(
         selectedCategoryId: event.categoryId,
-        displayedContacts: filtered,
+        filteredAllContacts: filtered,
       );
       emit(updatedState);
     } catch (e) {
@@ -196,11 +197,28 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
       // Sort results by name
       filtered = _sortContactsByName(filtered);
 
+      // Also filter recent contacts if search is active
+      var filteredRecent = <ContactEntity>[...currentState.recentContacts];
+      if (event.query.isNotEmpty) {
+        final lowerQuery = event.query.toLowerCase();
+        filteredRecent = filteredRecent
+            .where((final contact) {
+              final nameMatch = (contact.name ?? '')
+                  .toLowerCase()
+                  .contains(lowerQuery);
+              final phoneMatch = (contact.phone ?? '').contains(event.query);
+              return nameMatch || phoneMatch;
+            })
+            .toList();
+        filteredRecent = _sortContactsByName(filteredRecent);
+      }
+
       // Update state with search results
       final updatedState = currentState.copyWith(
         searchQuery: event.query,
         isSearchActive: event.query.isNotEmpty,
-        displayedContacts: filtered,
+        filteredAllContacts: filtered,
+        filteredRecentContacts: filteredRecent,
       );
       emit(updatedState);
     } catch (e) {
@@ -220,15 +238,9 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     try {
       AppLog.d('ContactsBloc: Tab changed to ${event.tab.name}');
 
-      // Determine what to display based on tab
-      final displayedContacts = event.tab == ContactsTab.recent
-          ? currentState.recentContacts
-          : currentState.allContacts;
-
       // Clear search and filters when switching tabs
       final updatedState = currentState.copyWith(
         activeTab: event.tab,
-        displayedContacts: displayedContacts,
         searchQuery: '',
         selectedCategoryId: 'all',
         isSearchActive: false,
@@ -258,8 +270,12 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
           final updatedRecents =
               await _getRecentContactsUseCase.call();
           final currentState = state as ContactsLoaded;
+          final sortedRecents = _sortContactsByName(updatedRecents);
 
-          emit(currentState.copyWith(recentContacts: updatedRecents));
+          emit(currentState.copyWith(
+            recentContacts: sortedRecents,
+            filteredRecentContacts: sortedRecents,
+          ));
         }
       } else {
         AppLog.w('ContactsBloc: Failed to record contact opened');
@@ -317,9 +333,11 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
 
       // Sort contacts by name
       final sortedContacts = _sortContactsByName(currentState.allContacts);
+      final sortedRecents = _sortContactsByName(currentState.recentContacts);
 
       final updatedState = currentState.copyWith(
-        displayedContacts: sortedContacts,
+        filteredAllContacts: sortedContacts,
+        filteredRecentContacts: sortedRecents,
         selectedCategoryId: 'all',
         searchQuery: '',
         isSearchActive: false,

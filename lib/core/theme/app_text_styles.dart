@@ -76,7 +76,7 @@ class AppTextStyles {
   static TextStyle tabLabel(double scale, {required bool isActive}) => TextStyle(
         fontSize: 14 * scale,
         fontWeight: FontWeight.w600,
-        color: isActive ? AppColors.tabActive : AppColors.tabInactive,
+        color: isActive ? AppColors.textPrimary : AppColors.textSecondary,
       );
 
   static TextStyle contactName(double scale) => TextStyle(

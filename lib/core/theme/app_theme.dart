@@ -24,20 +24,20 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.background,
       textTheme: textTheme,
       appBarTheme: AppBarTheme(
-        elevation: 2,
-        backgroundColor: AppColors.primaryDark,
-        foregroundColor: AppColors.onPrimary,
+        elevation: 0,
+        backgroundColor: AppColors.background,
+        foregroundColor: AppColors.primary,
         centerTitle: false,
         titleTextStyle: AppTextStyles.appBarTitle(textScale),
-        iconTheme: const IconThemeData(color: AppColors.onPrimary, size: 24),
+        iconTheme: const IconThemeData(color: AppColors.onSurface, size: 24),
       ),
       tabBarTheme: TabBarThemeData(
-        labelColor: AppColors.tabActive,
-        unselectedLabelColor: AppColors.tabInactive,
+        labelColor: AppColors.textPrimary,
+        unselectedLabelColor: AppColors.textSecondary,
         labelStyle: AppTextStyles.tabLabel(textScale, isActive: true),
         unselectedLabelStyle: AppTextStyles.tabLabel(textScale, isActive: false),
         indicator: const UnderlineTabIndicator(
-          borderSide: BorderSide(color: AppColors.onPrimary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
@@ -47,11 +47,11 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.divider),
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.primary, width: 1.5),
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
       ),
       dividerTheme: const DividerThemeData(

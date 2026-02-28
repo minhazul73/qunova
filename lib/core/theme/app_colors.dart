@@ -19,10 +19,6 @@ class AppColors {
   static const Color textSecondary = Color(0xFF757575);
   static const Color textHint = Color(0xFFBDBDBD);
 
-  // Tabs
-  static const Color tabActive = Color(0xFFFFFFFF);
-  static const Color tabInactive = Color(0xB3FFFFFF); // 70% alpha
-
   // Chips
   static const Color chipSelectedBackground = primaryLight;
   static const Color chipSelectedBorder = primary;

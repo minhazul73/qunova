@@ -30,8 +30,11 @@ class ContactsLoaded extends ContactsState {
   /// Recently opened contacts
   final List<ContactEntity> recentContacts;
 
-  /// Currently filtered/displayed contacts
-  final List<ContactEntity> displayedContacts;
+  /// Filtered contacts for the Contacts tab (with category and search applied)
+  final List<ContactEntity> filteredAllContacts;
+
+  /// Filtered recent contacts for the Recent tab (with search applied)
+  final List<ContactEntity> filteredRecentContacts;
 
   /// All available categories
   final List<CategoryEntity> categories;
@@ -51,7 +54,8 @@ class ContactsLoaded extends ContactsState {
   const ContactsLoaded({
     required this.allContacts,
     required this.recentContacts,
-    required this.displayedContacts,
+    required this.filteredAllContacts,
+    required this.filteredRecentContacts,
     required this.categories,
     required this.selectedCategoryId,
     required this.searchQuery,
@@ -63,7 +67,8 @@ class ContactsLoaded extends ContactsState {
   List<Object?> get props => [
     allContacts,
     recentContacts,
-    displayedContacts,
+    filteredAllContacts,
+    filteredRecentContacts,
     categories,
     selectedCategoryId,
     searchQuery,
@@ -75,7 +80,8 @@ class ContactsLoaded extends ContactsState {
   ContactsLoaded copyWith({
     List<ContactEntity>? allContacts,
     List<ContactEntity>? recentContacts,
-    List<ContactEntity>? displayedContacts,
+    List<ContactEntity>? filteredAllContacts,
+    List<ContactEntity>? filteredRecentContacts,
     List<CategoryEntity>? categories,
     String? selectedCategoryId,
     String? searchQuery,
@@ -85,7 +91,8 @@ class ContactsLoaded extends ContactsState {
     return ContactsLoaded(
       allContacts: allContacts ?? this.allContacts,
       recentContacts: recentContacts ?? this.recentContacts,
-      displayedContacts: displayedContacts ?? this.displayedContacts,
+      filteredAllContacts: filteredAllContacts ?? this.filteredAllContacts,
+      filteredRecentContacts: filteredRecentContacts ?? this.filteredRecentContacts,
       categories: categories ?? this.categories,
       selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
       searchQuery: searchQuery ?? this.searchQuery,
