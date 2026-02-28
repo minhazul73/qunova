@@ -5,15 +5,8 @@ import '../../../../core/network/api_exception.dart';
 import '../models/category_model.dart';
 import '../models/contact_model.dart';
 
-/// Abstract contract for remote contact data operations
+
 abstract class ContactRemoteService {
-  /// Fetches contacts and categories from the API
-  ///
-  /// Returns a tuple containing:
-  /// - List of categories
-  /// - List of contacts (filtered to exclude empty ones)
-  ///
-  /// Throws [ApiException] on error
   Future<({List<CategoryModel> categories, List<ContactModel> contacts})>
       fetchContacts();
 }
@@ -25,7 +18,6 @@ class ContactRemoteServiceImpl implements ContactRemoteService {
   ContactRemoteServiceImpl({required ApiClient apiClient})
     : _apiClient = apiClient;
 
-  @override
   Future<({List<CategoryModel> categories, List<ContactModel> contacts})>
   fetchContacts() async {
     try {

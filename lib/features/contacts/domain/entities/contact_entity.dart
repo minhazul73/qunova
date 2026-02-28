@@ -1,8 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-/// Domain entity representing a contact
-///
-/// Pure business object without JSON serialization logic
 class ContactEntity extends Equatable {
   final String id;
   final bool isEmpty;

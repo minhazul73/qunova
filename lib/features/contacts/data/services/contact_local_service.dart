@@ -4,37 +4,22 @@ import '../../../../core/logging/app_log.dart';
 import '../../../../core/persistence/kv_store.dart';
 import '../models/contact_model.dart';
 
-/// Abstract contract for local contact data operations
 abstract class ContactLocalService {
-  /// Gets the list of recent contact IDs (ordered by most recent first)
   Future<List<String>> getRecentContactIds();
 
-  /// Marks a contact as opened (adds to recent list)
-  ///
-  /// If the contact was already in the list, it's moved to the front.
-  /// List is capped at max recent contacts.
   Future<bool> markContactOpened(String contactId);
 
-  /// Clears all recent contacts
   Future<bool> clearRecentContacts();
 
-  /// Gets all locally stored contacts
   Future<List<ContactModel>> getLocalContacts();
 
-  /// Saves a new local contact or updates existing one
-  ///
-  /// If a contact with the same ID exists, it's updated.
-  /// Otherwise, the contact is added to the list.
   Future<bool> saveLocalContact(ContactModel contact);
 
-  /// Deletes a local contact by ID
   Future<bool> deleteLocalContact(String contactId);
 
-  /// Clears all locally stored contacts
   Future<bool> clearLocalContacts();
 }
 
-/// Local data source for managing recent contacts and locally added contacts
 class ContactLocalServiceImpl implements ContactLocalService {
   final KvStore _kvStore;
 

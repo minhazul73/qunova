@@ -1,8 +1,5 @@
 import '../../domain/entities/contact_entity.dart';
 
-/// Data model for ContactEntity with JSON serialization
-///
-/// Extends ContactEntity (model is a superset)
 class ContactModel extends ContactEntity {
   const ContactModel({
     required super.id,
@@ -16,7 +13,6 @@ class ContactModel extends ContactEntity {
     super.createdAt,
   });
 
-  /// Creates a ContactModel from JSON
   factory ContactModel.fromJson(Map<String, dynamic> json) {
     final isEmpty = json[_Json.isEmpty] as bool? ?? false;
     final createdAtStr = json[_Json.createdAt] as String?;
@@ -34,7 +30,6 @@ class ContactModel extends ContactEntity {
     );
   }
 
-  /// Creates a list of ContactModel from JSON list
   static List<ContactModel> fromJsonList(List<dynamic> jsonList) {
     return jsonList
         .map((json) => ContactModel.fromJson(json as Map<String, dynamic>))
@@ -54,7 +49,6 @@ class ContactModel extends ContactEntity {
     _Json.createdAt: createdAt?.toIso8601String(),
   };
 
-  /// Creates a copy with updated fields
   ContactModel copyWith({
     String? id,
     bool? isEmpty,

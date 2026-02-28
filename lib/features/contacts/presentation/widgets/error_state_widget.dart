@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Generic error state widget displayed when an error occurs
 class ErrorStateWidget extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;

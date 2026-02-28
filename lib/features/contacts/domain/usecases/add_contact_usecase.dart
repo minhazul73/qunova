@@ -1,13 +1,11 @@
 import '../../domain/entities/contact_entity.dart';
 import '../../domain/repositories/contact_repository.dart';
 
-/// Use case for adding a new contact
 class AddContactUseCase {
   final ContactRepository repository;
 
   AddContactUseCase({required this.repository});
 
-  /// Adds a new contact and returns success status
   Future<bool> call({
     required String name,
     required String phone,

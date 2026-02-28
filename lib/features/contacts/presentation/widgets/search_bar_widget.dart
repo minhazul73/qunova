@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Custom search bar widget for contacts with debounced search
-///
-/// Displays a pill-shaped text field with search icon, clear button,
-/// and debounced input to optimize search performance.
 class SearchBarWidget extends StatefulWidget {
   final Function(String) onSearchChanged;
   final String hintText;

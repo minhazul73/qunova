@@ -191,10 +191,7 @@ class _SplashPageContentState extends State<_SplashPageContent>
 
                 return Stack(
                   children: [
-                    // Animated Logo
                     _buildAnimatedLogo(state),
-
-                    // Onboarding Sheet Listener
                     BlocListener<SplashBloc, SplashState>(
                       listener: (context, state) {
                         if (state is SplashOnboardingActive) {
@@ -203,8 +200,6 @@ class _SplashPageContentState extends State<_SplashPageContent>
                       },
                       child: const SizedBox.shrink(),
                     ),
-
-                    // Top Circle
                     AnimatedCircle(
                       duration: positionData.duration.inMilliseconds.toDouble(),
                       top: positionData.topCircle.topPosition,
@@ -212,8 +207,6 @@ class _SplashPageContentState extends State<_SplashPageContent>
                       size: positionData.topCircle.size,
                       color: positionData.color,
                     ),
-
-                    // Bottom Circle
                     AnimatedCircle(
                       duration: positionData.duration.inMilliseconds.toDouble(),
                       bottom: positionData.bottomCircle.bottomPosition,

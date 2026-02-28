@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/contact_entity.dart';
 
-/// Contact list item widget displaying avatar, name, subtitle, and phone
-///
-/// Shows a horizontal layout with circular avatar on the left,
-/// contact information in the middle, and a divider at the bottom.
 class ContactListItem extends StatelessWidget {
   final ContactEntity contact;
   final VoidCallback? onTap;

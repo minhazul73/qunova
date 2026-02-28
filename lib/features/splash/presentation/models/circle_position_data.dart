@@ -13,7 +13,6 @@ class CirclePositionData {
     required this.leftPosition,
   });
 
-  /// Data for the top circle
   factory CirclePositionData.top({
     required double topPosition,
     required double rightPosition,
@@ -28,7 +27,6 @@ class CirclePositionData {
     );
   }
 
-  /// Data for the bottom circle
   factory CirclePositionData.bottom({
     required double bottomPosition,
     required double leftPosition,

@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_colors.dart';
 
-/// Category filter chip with avatar and label
-///
-/// Displays a vertical layout with circular avatar on top and label below.
-/// Supports selected/unselected states with smooth animations.
 class CategoryChip extends StatelessWidget {
   final String categoryId;
   final String categoryName;

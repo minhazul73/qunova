@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Empty state widget displayed when no contacts are found
-///
-/// Shows a message and an action button to add a new contact.
 class EmptyStateWidget extends StatelessWidget {
   final String message;
   final String? description;

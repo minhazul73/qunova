@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Loading shimmer widget for contact list items
-///
-/// Displays a skeleton loading state that matches the layout of ContactListItem.
-/// Uses built-in Flutter animations without external packages.
 class LoadingShimmer extends StatefulWidget {
   final int itemCount;
 

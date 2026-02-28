@@ -2,14 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
 
-/// Add contact bottom sheet form
-///
-/// Displays a modal bottom sheet with fields to add a new contact:
-/// - Name (required)
-/// - Phone (required)
-/// - Designation (optional)
-/// - Company (optional)
-/// - Relation (optional dropdown)
 class AddContactSheet extends StatefulWidget {
   final Function({
     required String name,

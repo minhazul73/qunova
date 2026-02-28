@@ -2,7 +2,6 @@ import 'package:azlistview/azlistview.dart';
 
 import '../../domain/entities/contact_entity.dart';
 
-/// Presentation adapter that maps [ContactEntity] to AzListView contract.
 class AzContactItem extends ISuspensionBean {
   final ContactEntity contact;
   final String tag;
