@@ -86,7 +86,6 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
     Emitter<SplashState> emit,
   ) async {
     emit(const SplashReadyToNavigate());
-    await Future.delayed(AppConstants.shortAnimationDuration);
     add(const SplashNavigateToMain());
   }
 

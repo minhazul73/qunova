@@ -103,6 +103,7 @@ class _ContactsPageState extends State<ContactsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
       body: BlocConsumer<ContactsBloc, ContactsState>(

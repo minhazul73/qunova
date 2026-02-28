@@ -50,43 +50,47 @@ class ContactsTabList extends StatelessWidget {
       return a.normalizedName.compareTo(b.normalizedName);
     });
 
-    return AzListView(
-      data: azItems,
-      itemCount: azItems.length,
-      itemBuilder: (context, index) {
-        final item = azItems[index];
-        return ContactListItem(
-          contact: item.contact,
-          onTap: () {
-            context
-                .read<ContactsBloc>()
-                .add(ContactOpenedEvent(item.contact.id));
-            context.push(
-              RouteNames.contactDetailPath.replaceFirst(':id', item.contact.id),
-              extra: item.contact,
-            );
-          },
-        );
-      },
-      indexBarData: const [
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#',
-      ],
-      susItemBuilder: (context, index) => const SizedBox.shrink(),
-      indexBarOptions: const IndexBarOptions(
-        needRebuild: true,
-        hapticFeedback: true,
-        indexHintAlignment: Alignment.centerRight,
-        textStyle: TextStyle(
-          fontSize: 9,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textSecondary,
-        ),
-        selectTextStyle: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w700,
-          color: AppColors.primary,
-          height: 1,
+    return MediaQuery.removeViewInsets(
+      context: context,
+      removeBottom: true,
+      child: AzListView(
+        data: azItems,
+        itemCount: azItems.length,
+        itemBuilder: (context, index) {
+          final item = azItems[index];
+          return ContactListItem(
+            contact: item.contact,
+            onTap: () {
+              context
+                  .read<ContactsBloc>()
+                  .add(ContactOpenedEvent(item.contact.id));
+              context.push(
+                RouteNames.contactDetailPath.replaceFirst(':id', item.contact.id),
+                extra: item.contact,
+              );
+            },
+          );
+        },
+        indexBarData: const [
+          'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+          'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#',
+        ],
+        susItemBuilder: (context, index) => const SizedBox.shrink(),
+        indexBarOptions: const IndexBarOptions(
+          needRebuild: true,
+          hapticFeedback: true,
+          indexHintAlignment: Alignment.centerRight,
+          textStyle: TextStyle(
+            fontSize: 9,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textSecondary,
+          ),
+          selectTextStyle: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            color: AppColors.primary,
+            height: 1,
+          ),
         ),
       ),
     );
