@@ -33,7 +33,7 @@ class EmptyStateWidget extends StatelessWidget {
             Icon(
               Icons.person_search_outlined,
               size: 80.0,
-              color: AppColors.textHint.withOpacity(0.5),
+              color: AppColors.textHint.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 24.0),
             // Message

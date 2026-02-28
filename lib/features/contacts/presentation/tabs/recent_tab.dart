@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/route_names.dart';
 import '../bloc/contacts_bloc.dart';
 import '../bloc/contacts_event.dart';
 import '../bloc/contacts_state.dart';
@@ -41,6 +43,10 @@ class RecentTab extends StatelessWidget {
               contact: contact,
               onTap: () {
                 context.read<ContactsBloc>().add(ContactOpenedEvent(contact.id));
+                context.push(
+                  RouteNames.contactDetailPath.replaceFirst(':id', contact.id),
+                  extra: contact,
+                );
               },
             );
           },

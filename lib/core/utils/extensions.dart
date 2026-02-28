@@ -35,11 +35,18 @@ extension BuildContextExtensions on BuildContext {
   double get screenHeight => screenSize.height;
 
   /// Show SnackBar with message
-  void showSnackBar(String message, {Duration? duration}) {
+  void showSnackBar(
+    String message, {
+    Duration? duration,
+    Color? backgroundColor,
+    SnackBarBehavior? behavior,
+  }) {
     ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: duration ?? const Duration(seconds: 2),
+        backgroundColor: backgroundColor,
+        behavior: behavior,
       ),
     );
   }

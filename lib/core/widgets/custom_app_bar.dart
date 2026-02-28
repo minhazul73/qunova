@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
+import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 
 /// A reusable AppBar with tabs, search functionality, and smooth animations
@@ -126,7 +128,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             ),
             if (widget.showMenuButton)
               IconButton(
-                icon: const Icon(Icons.menu_rounded),
+                icon: SvgPicture.asset(AppConstants.menuIcon),
                 onPressed: widget.onMenuTap ?? () {},
               ),
           ],

@@ -1,7 +1,9 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../data/models/az_contact_item.dart';
 import '../bloc/contacts_bloc.dart';
@@ -59,6 +61,10 @@ class ContactsTabList extends StatelessWidget {
             context
                 .read<ContactsBloc>()
                 .add(ContactOpenedEvent(item.contact.id));
+            context.push(
+              RouteNames.contactDetailPath.replaceFirst(':id', item.contact.id),
+              extra: item.contact,
+            );
           },
         );
       },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/custom_fab.dart';
 import '../bloc/contacts_bloc.dart';
@@ -108,11 +109,9 @@ class _ContactsPageState extends State<ContactsPage>
         listener: (context, state) {
           // Handle side effects like showing snackbars
           if (state is ContactsError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.error,
-              ),
+            context.showSnackBar(
+              state.message,
+              backgroundColor: AppColors.error,
             );
           }
         },
