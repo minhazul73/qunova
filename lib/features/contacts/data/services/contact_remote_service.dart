@@ -18,6 +18,7 @@ class ContactRemoteServiceImpl implements ContactRemoteService {
   ContactRemoteServiceImpl({required ApiClient apiClient})
     : _apiClient = apiClient;
 
+  @override
   Future<({List<CategoryModel> categories, List<ContactModel> contacts})>
   fetchContacts() async {
     try {
