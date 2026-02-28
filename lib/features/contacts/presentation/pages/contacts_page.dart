@@ -14,10 +14,6 @@ import '../widgets/add_contact_sheet.dart';
 import '../widgets/error_state_widget.dart';
 import '../widgets/loading_shimmer.dart';
 
-/// Main contacts page with tabs, search, filtering, and contact list
-///
-/// Displays contacts with category filtering, search functionality,
-/// and tabbed view for all contacts and recent contacts.
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});
 

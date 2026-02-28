@@ -8,12 +8,10 @@ abstract class ContactsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Loads all contacts from use case
 class LoadContactsEvent extends ContactsEvent {
   const LoadContactsEvent();
 }
 
-/// Filters contacts by category ID
 class FilterByCategoryEvent extends ContactsEvent {
   final String categoryId;
 
@@ -23,7 +21,6 @@ class FilterByCategoryEvent extends ContactsEvent {
   List<Object?> get props => [categoryId];
 }
 
-/// Searches contacts by query (name or phone)
 class SearchContactsEvent extends ContactsEvent {
   final String query;
 
@@ -33,7 +30,6 @@ class SearchContactsEvent extends ContactsEvent {
   List<Object?> get props => [query];
 }
 
-/// Changes active tab (Contact / Recent)
 class TabChangedEvent extends ContactsEvent {
   final ContactsTab tab;
 
@@ -43,7 +39,6 @@ class TabChangedEvent extends ContactsEvent {
   List<Object?> get props => [tab];
 }
 
-/// Records a contact as recently opened
 class ContactOpenedEvent extends ContactsEvent {
   final String contactId;
 
@@ -53,7 +48,6 @@ class ContactOpenedEvent extends ContactsEvent {
   List<Object?> get props => [contactId];
 }
 
-/// Submits a new contact from the add contact sheet
 class AddContactSubmittedEvent extends ContactsEvent {
   final String name;
   final String phone;
@@ -73,12 +67,10 @@ class AddContactSubmittedEvent extends ContactsEvent {
   List<Object?> get props => [name, phone, designation, company, relation];
 }
 
-/// Clears all filters and search
 class ResetFiltersEvent extends ContactsEvent {
   const ResetFiltersEvent();
 }
 
-/// Enum for active tab
 enum ContactsTab {
   contacts,
   recent,

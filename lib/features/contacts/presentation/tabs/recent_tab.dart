@@ -9,7 +9,6 @@ import '../bloc/contacts_state.dart';
 import '../widgets/contact_list_item.dart';
 import '../widgets/empty_state_widget.dart';
 
-/// Recent contacts tab view displaying recently accessed contacts
 class RecentTab extends StatelessWidget {
   const RecentTab({
     super.key,

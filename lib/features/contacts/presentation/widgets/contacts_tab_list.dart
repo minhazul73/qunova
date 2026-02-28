@@ -12,10 +12,6 @@ import '../../domain/entities/contact_entity.dart';
 import 'contact_list_item.dart';
 import 'empty_state_widget.dart';
 
-/// Alphabetically indexed contact list view for the Contacts tab
-///
-/// Displays contacts in AzListView with A-Z index bar, sorted alphabetically.
-/// Shows empty state if no contacts match current filters/search.
 class ContactsTabList extends StatelessWidget {
   final List<ContactEntity> contacts;
   final String searchQuery;

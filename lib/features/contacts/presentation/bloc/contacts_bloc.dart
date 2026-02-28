@@ -10,7 +10,6 @@ import '../../domain/usecases/mark_contact_opened_usecase.dart';
 import 'contacts_event.dart';
 import 'contacts_state.dart';
 
-/// BLoC for managing contacts state and business logic
 class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   final GetRecentContactsUseCase _getRecentContactsUseCase;
   final MarkContactOpenedUseCase _markContactOpenedUseCase;
@@ -34,16 +33,12 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     _registerEventHandlers();
   }
 
-  /// Initializes the search debouncer
   void _initDebouncer() {
-    // Debouncer initialized but not used in simple implementation
-    // Can be enabled for performance optimization in search-heavy scenarios
     _searchDebouncer = Debouncer(
       duration: const Duration(milliseconds: 300),
     );
   }
 
-  /// Registers all event handlers
   void _registerEventHandlers() {
     on<LoadContactsEvent>(_onLoadContacts);
     on<FilterByCategoryEvent>(_onFilterByCategory);
@@ -54,7 +49,6 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     on<ResetFiltersEvent>(_onResetFilters);
   }
 
-  /// Sorts contacts alphabetically by name
   List<ContactEntity> _sortContactsByName(
     List<ContactEntity> contacts,
   ) {
@@ -67,7 +61,6 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
     return sorted;
   }
 
-  /// Handles loading contacts from use case
   Future<void> _onLoadContacts(
     LoadContactsEvent event,
     Emitter<ContactsState> emit,

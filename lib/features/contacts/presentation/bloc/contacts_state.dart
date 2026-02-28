@@ -12,17 +12,14 @@ abstract class ContactsState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Initial state before any data is loaded
 class ContactsInitial extends ContactsState {
   const ContactsInitial();
 }
 
-/// Loading state when fetching contacts
 class ContactsLoading extends ContactsState {
   const ContactsLoading();
 }
 
-/// Loaded state with all data
 class ContactsLoaded extends ContactsState {
   /// All contacts combined (remote + local)
   final List<ContactEntity> allContacts;

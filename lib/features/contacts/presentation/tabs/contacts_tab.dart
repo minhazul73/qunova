@@ -7,7 +7,6 @@ import '../bloc/contacts_state.dart';
 import '../widgets/category_chip.dart';
 import '../widgets/contacts_tab_list.dart';
 
-/// Contacts tab view displaying all contacts with category filtering
 class AllContactsTab extends StatelessWidget {
   const AllContactsTab({
     super.key,

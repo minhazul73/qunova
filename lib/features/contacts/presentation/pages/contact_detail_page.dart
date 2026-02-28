@@ -10,7 +10,6 @@ import '../widgets/shared/contact_info_card.dart';
 import '../widgets/shared/contact_primary_actions.dart';
 import '../widgets/shared/contact_secondary_actions_card.dart';
 
-/// Contact detail page displaying comprehensive contact information.
 class ContactDetailPage extends StatelessWidget {
   static const String name = 'contact-detail';
 
