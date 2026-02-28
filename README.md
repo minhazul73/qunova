@@ -69,7 +69,7 @@ flutter run
 ## Preview & Install (Drive)
 
 Google Drive (video preview + APK):
-https://drive.google.com/file/d/1MapOQH5apeFpCdHLbP8NgkPUprFdr8Em/view?usp=sharing
+https://drive.google.com/drive/folders/1SwHIKt3avNka0rejhUXei9nZqPWlnUup?usp=sharing
 
 - Open the link to watch the video preview
 - Download the APK from the same link to install the app
