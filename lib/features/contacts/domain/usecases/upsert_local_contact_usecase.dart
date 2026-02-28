@@ -37,6 +37,6 @@ class UpsertLocalContactUseCase {
   /// - If it's new, it will be added to local storage
   /// - For new contacts, generate a unique ID (e.g., 'local_' + timestamp)
   Future<bool> call(ContactEntity contact) async {
-    return await _repository.saveContact(contact);
+    return _repository.saveContact(contact);
   }
 }

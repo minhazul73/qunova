@@ -4,33 +4,13 @@ import 'package:flutter_svg/svg.dart';
 import '../constants/app_constants.dart';
 import '../theme/app_colors.dart';
 
-/// A reusable AppBar with tabs, search functionality, and smooth animations
-///
-/// Features:
-/// - Tab navigation
-/// - Animated search overlay that slides in from the right
-/// - Search with real-time callbacks
-/// - Optional menu button
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  /// Controller for managing tabs
   final TabController tabController;
-
-  /// List of tab labels
   final List<String> tabLabels;
-
-  /// Callback when search query changes
   final Function(String query) onSearchChanged;
-
-  /// Callback when search is cleared/closed
   final VoidCallback? onSearchCleared;
-
-  /// Callback when menu button is tapped
   final VoidCallback? onMenuTap;
-
-  /// Placeholder text for search field
   final String searchHint;
-
-  /// Whether to show the menu button
   final bool showMenuButton;
 
   const CustomAppBar({
@@ -72,7 +52,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   void _activateSearch() {
     setState(() => _isSearchActive = true);
-    // Request focus after state update
     Future.delayed(const Duration(milliseconds: 100), () {
       _searchFocusNode.requestFocus();
     });

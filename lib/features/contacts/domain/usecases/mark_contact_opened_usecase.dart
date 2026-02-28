@@ -24,6 +24,6 @@ class MarkContactOpenedUseCase {
   /// - true: If the contact was successfully marked as opened
   /// - false: If the operation failed
   Future<bool> call(String contactId) async {
-    return await _repository.markContactOpened(contactId);
+    return _repository.markContactOpened(contactId);
   }
 }

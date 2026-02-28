@@ -1,4 +1,3 @@
-/// Custom exception classes for API errors
 abstract class ApiException implements Exception {
   final String message;
   final int? statusCode;
@@ -10,7 +9,6 @@ abstract class ApiException implements Exception {
       'ApiException: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
 }
 
-/// Exception for network connectivity issues
 class NetworkException extends ApiException {
   const NetworkException([super.message = 'No internet connection']);
 
@@ -18,7 +16,6 @@ class NetworkException extends ApiException {
   String toString() => 'NetworkException: $message';
 }
 
-/// Exception for request timeout
 class TimeoutException extends ApiException {
   const TimeoutException([super.message = 'Request timeout']);
 
@@ -26,7 +23,6 @@ class TimeoutException extends ApiException {
   String toString() => 'TimeoutException: $message';
 }
 
-/// Exception for server errors (5xx)
 class ServerException extends ApiException {
   const ServerException([super.message = 'Server error', super.statusCode]);
 
@@ -34,7 +30,6 @@ class ServerException extends ApiException {
   String toString() => 'ServerException: $message (Status: $statusCode)';
 }
 
-/// Exception for client errors (4xx)
 class ClientException extends ApiException {
   const ClientException([super.message = 'Client error', super.statusCode]);
 
@@ -42,7 +37,6 @@ class ClientException extends ApiException {
   String toString() => 'ClientException: $message (Status: $statusCode)';
 }
 
-/// Exception for JSON parsing errors
 class ParseException extends ApiException {
   const ParseException([super.message = 'Failed to parse response']);
 
@@ -50,7 +44,6 @@ class ParseException extends ApiException {
   String toString() => 'ParseException: $message';
 }
 
-/// Exception for unknown/unexpected errors
 class UnknownException extends ApiException {
   const UnknownException([super.message = 'An unknown error occurred']);
 

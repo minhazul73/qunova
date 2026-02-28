@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
-/// App Theme configuration
 class AppTheme {
   AppTheme._();
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 
-/// Centralized text styles with optional responsive scaling
 class AppTextStyles {
   AppTextStyles._();
 

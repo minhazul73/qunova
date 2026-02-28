@@ -7,16 +7,11 @@ import 'package:http/http.dart' as http;
 import '../constants/api_constants.dart';
 import 'api_exception.dart';
 
-/// HTTP client wrapper for API calls with error handling
 class ApiClient {
   final http.Client _client;
 
   ApiClient({http.Client? client}) : _client = client ?? http.Client();
 
-  /// Perform a GET request
-  ///
-  /// Returns the decoded JSON response body as a Map.
-  /// Throws appropriate [ApiException] subclasses on failure.
   Future<Map<String, dynamic>> get(
     String url, {
     Map<String, String>? headers,
@@ -46,10 +41,6 @@ class ApiClient {
     }
   }
 
-  /// Perform a POST request
-  ///
-  /// Returns the decoded JSON response body as a Map.
-  /// Throws appropriate [ApiException] subclasses on failure.
   Future<Map<String, dynamic>> post(
     String url, {
     Map<String, String>? headers,
@@ -84,11 +75,9 @@ class ApiClient {
     }
   }
 
-  /// Handle HTTP response and convert to appropriate exception if needed
   Map<String, dynamic> _handleResponse(http.Response response) {
     final statusCode = response.statusCode;
 
-    // Success (2xx)
     if (statusCode >= 200 && statusCode < 300) {
       try {
         final decoded = jsonDecode(response.body);
@@ -103,7 +92,6 @@ class ApiClient {
       }
     }
 
-    // Client errors (4xx)
     if (statusCode >= 400 && statusCode < 500) {
       throw ClientException(
         _extractErrorMessage(response.body) ?? 'Client error',
@@ -111,7 +99,6 @@ class ApiClient {
       );
     }
 
-    // Server errors (5xx)
     if (statusCode >= 500) {
       throw ServerException(
         _extractErrorMessage(response.body) ?? 'Server error',
@@ -122,7 +109,6 @@ class ApiClient {
     throw UnknownException('Unexpected status code: $statusCode');
   }
 
-  /// Try to extract error message from response body
   String? _extractErrorMessage(String body) {
     try {
       final decoded = jsonDecode(body);
@@ -131,13 +117,10 @@ class ApiClient {
             decoded['error'] as String? ??
             decoded['msg'] as String?;
       }
-    } catch (_) {
-      // If parsing fails, return null
-    }
+    } catch (_) {}
     return null;
   }
 
-  /// Dispose the HTTP client
   void dispose() {
     _client.close();
   }

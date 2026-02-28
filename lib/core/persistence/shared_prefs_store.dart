@@ -2,13 +2,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'kv_store.dart';
 
-/// SharedPreferences implementation of [KvStore]
 class SharedPrefsStore implements KvStore {
   final SharedPreferences _prefs;
 
   SharedPrefsStore(this._prefs);
 
-  /// Factory constructor that initializes SharedPreferences
   static Future<SharedPrefsStore> create() async {
     final prefs = await SharedPreferences.getInstance();
     return SharedPrefsStore(prefs);

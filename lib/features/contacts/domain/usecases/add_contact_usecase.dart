@@ -27,6 +27,6 @@ class AddContactUseCase {
       createdAt: DateTime.now(),
     );
 
-    return await repository.saveContact(contact);
+    return repository.saveContact(contact);
   }
 }

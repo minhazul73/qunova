@@ -1,4 +1,3 @@
-/// Route name and path constants
 class RouteNames {
   RouteNames._();
 

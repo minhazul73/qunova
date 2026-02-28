@@ -25,6 +25,6 @@ class GetRecentContactsUseCase {
   /// - Network/TimeoutException: If API call fails (to reload full contact list)
   /// - ParseException: If JSON parsing fails
   Future<List<ContactEntity>> call() async {
-    return await _repository.getRecentContacts();
+    return _repository.getRecentContacts();
   }
 }
