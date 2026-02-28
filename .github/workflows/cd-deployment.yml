@@ -6,6 +6,9 @@ on:
       - deployment
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-android-apk:
     name: Build Android APKs (split per ABI)
@@ -52,11 +55,16 @@ jobs:
             sha1sum "$new" | awk '{print $1}' > "$new.sha1"
           done
 
+          if [ -f "app-release.apk" ]; then
+            mv "app-release.apk" "qunova-release.apk"
+            sha1sum "qunova-release.apk" | awk '{print $1}' > "qunova-release.apk.sha1"
+          fi
+
       - name: Collect artifacts
         run: |
           mkdir -p artifacts
-          cp build/app/outputs/flutter-apk/*-release.apk artifacts/ || true
-          cp build/app/outputs/flutter-apk/*-release.apk.sha1 artifacts/ || true
+          cp build/app/outputs/flutter-apk/qunova*-release.apk artifacts/ || true
+          cp build/app/outputs/flutter-apk/qunova*-release.apk.sha1 artifacts/ || true
           ls -la artifacts
 
       - name: Upload APK artifacts
@@ -66,3 +74,13 @@ jobs:
           path: artifacts/
           if-no-files-found: error
           retention-days: 7
+
+      - name: Create GitHub Release (deployment)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: deployment-${{ github.run_number }}
+          name: Deployment build ${{ github.run_number }}
+          prerelease: true
+          files: |
+            artifacts/*.apk
+            artifacts/*.sha1
